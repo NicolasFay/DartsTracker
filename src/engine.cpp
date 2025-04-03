@@ -6,6 +6,9 @@ state screen;
 // Colors
 color originalFill, hoverFill, pressFill;
 
+//  COMPLETED Note: complete the drawing TODOs in render before the other TODOs,
+//  otherwise you won't be able to see if your code is correct
+
 Engine::Engine() : keys() {
     this->initWindow();
     this->initShaders();
@@ -90,27 +93,25 @@ void Engine::processInput() {
     glfwGetCursorPos(window, &MouseX, &MouseY);
 
     // If we're in the start screen and the user presses s, change screen to play
+    // Hint: The index is GLFW_KEY_S
     if (keys[GLFW_KEY_S] && screen == start) {
         screen = play;
     }
 
     // If we're in the play screen and an arrow key is pressed, move the spawnButton
-    //Make sure the spawnButton cannot go off the screen
-    if (keys[GLFW_KEY_UP] && screen == play) {
-        if (spawnButton->getTop() < height)
-            spawnButton->moveY(1);
-    }
-    if (keys[GLFW_KEY_DOWN] && screen == play) {
-        if (spawnButton->getBottom() > 0)
-            spawnButton->moveY(-1);
-    }
-    if (keys[GLFW_KEY_RIGHT] && screen == play) {
-        if (spawnButton->getRight() < width)
-            spawnButton->moveX(1);
-    }
-    if (keys[GLFW_KEY_LEFT] && screen == play) {
-        if (spawnButton->getLeft() > 0)
-            spawnButton->moveX(-1);
+    // Also check that the spawnButton stays on screen
+    // Hint: one of the indices is GLFW_KEY_UP
+    if (screen == play) {
+        // Reference: Graphics-Starter
+        float speed = 200.0f * deltaTime;
+        // Move up
+        if (keys[GLFW_KEY_UP] && spawnButton->getTop() < height) spawnButton->moveY(speed);
+        // Move down
+        if (keys[GLFW_KEY_DOWN] && spawnButton->getBottom() > 0) spawnButton->moveY(-speed);
+        // Move left
+        if (keys[GLFW_KEY_LEFT] && spawnButton->getLeft() > 0) spawnButton->moveX(-speed);
+        // Move right
+        if (keys[GLFW_KEY_RIGHT] && spawnButton->getRight() < width) spawnButton->moveX(speed);
     }
 
     // Mouse position is inverted because the origin of the window is in the top left corner
@@ -119,24 +120,28 @@ void Engine::processInput() {
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
     // When in play screen, if the user hovers or clicks on the button then change the spawnButton's color
-    if (screen == play && buttonOverlapsMouse) {
-        spawnButton->setColor(color{1, 0.4, 0.4, 1});
-    }
-    if (screen == play && buttonOverlapsMouse && mousePressed) {
-        spawnButton->setColor(color{0.6, 0, 0, 1});
+    // Hint: look at the color objects declared at the top of this file
+    if (screen == play) {
+        if (buttonOverlapsMouse) {
+            spawnButton->setColor(hoverFill);
+        }
+        if (mousePressed) {
+            spawnButton->setColor(pressFill);
+        }
     }
     // When in play screen, if the button was released then spawn confetti
     // Hint: the button was released if it was pressed last frame and is not pressed now
-    if (screen == play && mousePressedLastFrame && !mousePressed) {
+    if (screen == play && !mousePressed && mousePressedLastFrame) {
         spawnConfetti();
     }
     // Make sure the spawn button is its original color when the user is not hovering or clicking on it.
-    if (screen == play && !buttonOverlapsMouse) {
-        spawnButton->setColor(color{1, 0, 0, 1});
+    if (!buttonOverlapsMouse && !mousePressed) {
+        spawnButton->setColor(originalFill);
     }
 
     // Save mousePressed for next frame
     mousePressedLastFrame = mousePressed;
+
 }
 
 void Engine::update() {
@@ -145,10 +150,12 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
+    // End the game when the user spawns 100 confetti
     // If the size of the confetti vector reaches 100, change screen to over
-    if (confetti.size() >= 100) {
+    if (confetti.size() == 100) {
         screen = over;
     }
+
 }
 
 void Engine::render() {
@@ -171,21 +178,26 @@ void Engine::render() {
             break;
         }
         case play: {
-            // call setUniforms and draw on the spawnButton and all of the confetti pieces
-            // make sure you draw the spawn button after the confetti to make it appear on top
-                for (const unique_ptr<Shape> &c : confetti) {
-                    c->setUniforms();
-                    c->draw();
-                }
-                spawnButton->setUniforms();
-                spawnButton->draw();
+            //  Call setUniforms and draw on the spawnButton and all of the confetti pieces
+            //  Hint: make sure you draw the spawn button after the confetti to make it appear on top
+            // first draw confetti
+            for (const unique_ptr<Shape>& c : confetti) {
+                c->setUniforms();
+                c->draw();
+            }
+
+            // then draw spawnButton
+            spawnButton-> setUniforms();
+            spawnButton->draw();
+
             // Render font on top of spawn button
             fontRenderer->renderText("Spawn", spawnButton->getPos().x - 30, spawnButton->getPos().y - 5, projection, 0.5, vec3{1, 1, 1});
             break;
         }
         case over: {
             string message = "You win!";
-                this->fontRenderer->renderText(message, width/2 - (12 * message.length()), height/2, projection, 1, vec3{1, 1, 1});
+            // Display the message on the screen
+            fontRenderer->renderText(message, width/2, height/2, projection, 1, vec3{1, 1, 1});
             break;
         }
     }
@@ -195,11 +207,9 @@ void Engine::render() {
 
 void Engine::spawnConfetti() {
     vec2 pos = {rand() % (int)width, rand() % (int)height};
-    // Make each piece of confetti a different size, getting bigger with each spawn.
+    //  Make each piece of confetti a different size, getting bigger with each spawn.
     //  The smallest should be a square of size 1 and the biggest should be a square of size 100
-    int sizeConfetti = (rand() % 100)+1;
-    vec2 size = {sizeConfetti, sizeConfetti};
-
+    vec2 size = {confetti.size()+1, confetti.size()+1};
     color color = {float(rand() % 10 / 10.0), float(rand() % 10 / 10.0), float(rand() % 10 / 10.0), 1.0f};
     confetti.push_back(make_unique<Rect>(shapeShader, pos, size, color));
 }

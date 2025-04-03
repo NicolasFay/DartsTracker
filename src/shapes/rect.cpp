@@ -29,13 +29,12 @@ void Rect::draw() const {
 
 void Rect::initVectors() {
     this->vertices.insert(vertices.end(), {
-            // Note: the order of the corners matters because the two triangles
-            //    formed below from the indices of these corners must fill the 
-            //    rectangle
-            -0.5f, 0.5f,  // x, y of top left corner
-            0.5f, 0.5f, // top right
-            -0.5f, -0.5f, // bottom left
-            0.5f, -0.5f // bottom right
+        // Note: the order of the corners matters because the two triangles
+        // formed below from the indices of these corners must fill the rectangle
+        0.5f, -0.5f,  // x, y of bottom right corner
+        -0.5f, -0.5f, // x, y of bottom left corner
+        0.5f, 0.5f,   // x, y of top right corner
+        -0.5, 0.5f    // x, y of top left corner
     });
 
     this->indices.insert(indices.end(), {
