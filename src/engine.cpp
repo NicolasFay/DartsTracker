@@ -100,6 +100,9 @@ void Engine::processInput() {
     if (keys[GLFW_KEY_ESCAPE])
         glfwSetWindowShouldClose(window, true);
 
+    // Mouse position saved to check for collisions
+    glfwGetCursorPos(window, &MouseX, &MouseY);
+
     // Calculate delta time
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
