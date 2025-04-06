@@ -53,9 +53,16 @@ void Shape::setUniforms() const {
     this->shader.setVector4f("shapeColor", color.vec);
 }
 
-void Shape::rotateShape(float degrees, float deltaTime) {
-    rotation += degrees * deltaTime;
+bool Shape::isOverlapping(const vec2 &point) const {
+    // A shape is overlapping a point if the point is within the shape's bounding box.
+    // Hint: Even though getLeft, getRight, getTop, and getBottom aren't implemented
+    //       in this class, you can still call them from here.
+    if (point.x > getLeft() && point.x < getRight() &&
+        point.y > getBottom() && point.y < getTop())
+        return true;
+    return false; // Placeholder for compilation
 }
+
 
 // Setters
 void Shape::move(vec2 offset)         { pos += offset; }

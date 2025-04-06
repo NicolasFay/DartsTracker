@@ -1,11 +1,6 @@
 #include "engine.h"
 #include <iostream>
 
-// Include enum for if the light is on or off
-// might have to move to rect class
-enum state {on, off};
-state isLit;
-
 color offFill, onFill;
 
 Engine::Engine() : keys() {
@@ -110,11 +105,17 @@ void Engine::processInput() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    float speed = 200.0f * deltaTime;
-    if (keys[GLFW_KEY_UP]) shapes[0]->moveY(speed);
-    if (keys[GLFW_KEY_DOWN]) shapes[0]->moveY(-speed);
-    if (keys[GLFW_KEY_LEFT]) shapes[0]->moveX(-speed);
-    if (keys[GLFW_KEY_RIGHT]) shapes[0]->moveX(speed);
+    // Mouse position is inverted because the origin of the window is in the top left corner
+    MouseY = height - MouseY; // Invert y-axis of mouse position
+
+    // check if mouse is overlapping any buttons
+    bool mouseOverlapsSquare = false;
+    for (const unique_ptr<Shape>& s : shapes) {
+        if (s->isOverlapping(vec2(MouseX, MouseY))) {
+            mouseOverlapsSquare = true;
+        };
+    }
+
 }
 
 void Engine::update() {
@@ -123,16 +124,6 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    float scale = (sin(currentFrame) + 1.0) / 2.0;  // Varies between 0 and 1
-    //shapes[0]->setSize(vec2(300 * scale, 300 * scale));
-
-    //shapes[0]->rotateShape(90.0f, 0.01);
-
-    float phaseAngle = currentFrame * 1.5f; // You can adjust this value to make the colors change faster or slower
-    float red   = sin(phaseAngle + 0) * 0.5f + 0.5f; // 0 degrees out of phase
-    float green = sin(phaseAngle + 2.0f * M_PI / 3.0f) * 0.5f + 0.5f;  // 120 degrees out of phase
-    float blue  = sin(phaseAngle + 4.0f * M_PI / 3.0f) * 0.5f + 0.5f;  // 240 degrees out of phase
-    //shapes[0]->setColor(vec4(red, green, blue, 1.0f));
 
     // This function polls for events like keyboard input and mouse movement
     // It needs to be called every frame
