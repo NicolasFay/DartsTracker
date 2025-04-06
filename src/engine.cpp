@@ -83,8 +83,6 @@ void Engine::initShapes() {
         Yoffset = 150; // reset Yoffset so next col starts in same spot
         Xoffset += 175; // increment Xoffset to add another column
     }
-
-
 }
 
 void Engine::processInput() {
