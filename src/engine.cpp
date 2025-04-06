@@ -109,13 +109,21 @@ void Engine::processInput() {
     MouseY = height - MouseY; // Invert y-axis of mouse position
 
     // check if mouse is overlapping any buttons
-    bool mouseOverlapsSquare = false;
     for (const unique_ptr<Shape>& s : shapes) {
         if (s->isOverlapping(vec2(MouseX, MouseY))) {
-            mouseOverlapsSquare = true;
+            bool mouseOverlapsSquare = true;
         };
     }
 
+    // Check if mouse has been pressed
+    bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+
+    // Change color if you click a shape
+    for (const unique_ptr<Shape>& s : shapes) {
+        if (mousePressed && s->isOverlapping(vec2(MouseX, MouseY))) {
+            s->setColor(onFill);
+        };
+    }
 }
 
 void Engine::update() {
