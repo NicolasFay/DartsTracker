@@ -1,11 +1,20 @@
 #include "engine.h"
 #include <iostream>
 
+// Include enum for if the light is on or off
+// might have to move to rect class
+enum state {on, off};
+state isLit;
+
+color offFill, onFill;
 
 Engine::Engine() : keys() {
     this->initWindow();
     this->initShaders();
     this->initShapes();
+
+    offFill = {0.75, 0.75, 0.75, 1}; // grey
+    onFill = {1, 1, 0, 1}; // yellow
 }
 
 Engine::~Engine() {}
@@ -25,7 +34,7 @@ unsigned int Engine::initWindow(bool debug) {
 
     // This creates the window using GLFW.
     // It's a C function, so we have to pass it a pointer to the window variable.
-    window = glfwCreateWindow(width, height, "spinning square!", nullptr, nullptr);
+    window = glfwCreateWindow(width, height, "Lights Out", nullptr, nullptr);
     if (window == nullptr) {
         cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -68,7 +77,19 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes() {
-    shapes.push_back(make_unique<Rect>(shapeShader, vec2(width / 2, height / 2), vec2(300,300), color(1,1,1,1)));
+    int Xoffset = 150;
+    int Yoffset = 150;
+    // initialize 25 "off" squares
+    for (int j = 0; j < 5; ++j) {
+        for (int i = 0; i < 5; ++i) {
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), offFill));
+            Yoffset += 175; // evenly space the squares
+        }
+        Yoffset = 150; // reset Yoffset so next col starts in same spot
+        Xoffset += 175; // increment Xoffset to add another column
+    }
+
+
 }
 
 void Engine::processInput() {
@@ -103,15 +124,15 @@ void Engine::update() {
     lastFrame = currentFrame;
 
     float scale = (sin(currentFrame) + 1.0) / 2.0;  // Varies between 0 and 1
-    shapes[0]->setSize(vec2(300 * scale, 300 * scale));
+    //shapes[0]->setSize(vec2(300 * scale, 300 * scale));
 
-    shapes[0]->rotateShape(90.0f, 0.01);
+    //shapes[0]->rotateShape(90.0f, 0.01);
 
     float phaseAngle = currentFrame * 1.5f; // You can adjust this value to make the colors change faster or slower
     float red   = sin(phaseAngle + 0) * 0.5f + 0.5f; // 0 degrees out of phase
     float green = sin(phaseAngle + 2.0f * M_PI / 3.0f) * 0.5f + 0.5f;  // 120 degrees out of phase
     float blue  = sin(phaseAngle + 4.0f * M_PI / 3.0f) * 0.5f + 0.5f;  // 240 degrees out of phase
-    shapes[0]->setColor(vec4(red, green, blue, 1.0f));
+    //shapes[0]->setColor(vec4(red, green, blue, 1.0f));
 
     // This function polls for events like keyboard input and mouse movement
     // It needs to be called every frame
