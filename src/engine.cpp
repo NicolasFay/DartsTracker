@@ -123,7 +123,7 @@ void Engine::processInput() {
     for (const unique_ptr<Shape>& s : shapes) {
         if (mousePressed && s->isOverlapping(vec2(MouseX, MouseY))) {
             s->setColor(onFill);
-        };
+        }
     }
 }
 
