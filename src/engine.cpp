@@ -121,7 +121,7 @@ void Engine::processInput() {
 
     // Change color if you click a shape
     for (const unique_ptr<Shape>& s : shapes) {
-        if (mousePressed && s->isOverlapping(vec2(MouseX, MouseY))) {
+        if (mousePressed && s->isOverlapping(vec2(MouseX, MouseY-150))) {
             s->setColor(onFill);
         }
     }
