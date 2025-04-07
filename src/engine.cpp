@@ -122,7 +122,9 @@ void Engine::processInput() {
 
     // Change color if you click a shape
     for (const unique_ptr<Shape>& s : shapes) {
+        // check for mouse release
         if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY - 150))) {
+            // toggle and change color
             if (!s->isOn) {
                 s->toggle();
                 s->setColor(onFill);
@@ -135,6 +137,7 @@ void Engine::processInput() {
             }
         }
     }
+    // save mousePressed for next frame
     mousePressedLastFrame = mousePressed;
 }
 void Engine::update() {

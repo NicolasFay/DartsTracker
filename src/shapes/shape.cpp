@@ -63,6 +63,7 @@ bool Shape::isOverlapping(const vec2 &point) const {
 }
 
 void Shape::toggle() const {
+    // simple switch to keep track over a button's status
     if (isOn) {
         isOn = false;
     }
