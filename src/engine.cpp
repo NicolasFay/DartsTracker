@@ -4,12 +4,14 @@
 color offFill, onFill;
 
 Engine::Engine() : keys() {
+
+    offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
+    onFill.vec = {1, 1, 0, 1}; // yellow
+
     this->initWindow();
     this->initShaders();
     this->initShapes();
 
-    offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
-    onFill.vec = {1, 1, 0, 1}; // yellow
 }
 
 Engine::~Engine() {}
@@ -78,7 +80,7 @@ void Engine::initShapes() {
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), color{0.5,0.5,0.5,1}));
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), offFill));
             Yoffset += 175; // evenly space the squares
         }
         Yoffset = 150; // reset Yoffset so next col starts in same spot
