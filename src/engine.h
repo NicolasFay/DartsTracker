@@ -37,6 +37,7 @@ class Engine {
         vector<unique_ptr<Shape>> shapes;
 
         double MouseX, MouseY;
+        bool mousePressedLastFrame = false;
 
     public:
         /// @brief Constructor for the Engine class.

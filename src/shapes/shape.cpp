@@ -39,12 +39,11 @@ void Shape::initEBO() {
 }
 
 void Shape::setUniforms() const {
+    this->shader.use();
     // Define the model matrix for the shape as a 4x4 identity matrix
     mat4 model = mat4(1.0f);
     // The model matrix is used to transform the vertices of the shape in relation to the world space.
     model = translate(model, vec3(pos, 0.0f));
-    // The model matrix is used to rotate the shape around the z-axis.
-    model = rotate(model, radians(rotation), vec3(0.0f, 0.0f, 1.0f));
     // The size of the shape is scaled by the model matrix to make the shape larger or smaller.
     model = scale(model, vec3(size, 1.0f));
 
@@ -61,6 +60,15 @@ bool Shape::isOverlapping(const vec2 &point) const {
         point.y > getBottom() && point.y < getTop())
         return true;
     return false; // Placeholder for compilation
+}
+
+void Shape::toggle() const {
+    if (isOn) {
+        isOn = false;
+    }
+    else {
+        isOn = true;
+    }
 }
 
 

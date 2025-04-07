@@ -17,6 +17,8 @@ class Shape {
         /// @param color The color of the shape
         Shape(Shader& shader, vec2 pos, glm::vec2 size, struct color color);
 
+        mutable bool isOn;
+
         /// @brief Copy constructor for Shape
         Shape(Shape const& other);
 
@@ -65,9 +67,6 @@ class Shape {
         // Size Functions
         vec2 getSize() const;
 
-        // Rotation Functions
-        void rotateShape(float degrees, float dt);
-
         // --------------------------------------------------------
         // Setters
         // --------------------------------------------------------
@@ -100,6 +99,12 @@ class Shape {
         // Collision functions
         // --------------------------------------------------------
         virtual bool isOverlapping(const vec2& point) const;
+
+
+        // Toggle isOn
+        void toggle() const;
+
+        //virtual void toggle();
 
         // --------------------------------------------------------
         // Drawing functions

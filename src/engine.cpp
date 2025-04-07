@@ -8,8 +8,8 @@ Engine::Engine() : keys() {
     this->initShaders();
     this->initShapes();
 
-    offFill = {0.75, 0.75, 0.75, 1}; // grey
-    onFill = {1, 1, 0, 1}; // yellow
+    offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
+    onFill.vec = {1, 1, 0, 1}; // yellow
 }
 
 Engine::~Engine() {}
@@ -68,6 +68,7 @@ void Engine::initShaders() {
                                                   nullptr, "shape");
 
     // Set uniforms that never change
+    shapeShader.use();
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 }
 
@@ -77,15 +78,22 @@ void Engine::initShapes() {
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), offFill));
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), color{0.5,0.5,0.5,1}));
             Yoffset += 175; // evenly space the squares
         }
         Yoffset = 150; // reset Yoffset so next col starts in same spot
         Xoffset += 175; // increment Xoffset to add another column
     }
+
+    // default all start as "off"
+    for (const unique_ptr<Shape>& s : shapes) {
+        s->isOn = false;
+    }
 }
 
 void Engine::processInput() {
+    glfwPollEvents();
+
     // Set keys to true if pressed, false if released
     for (int key = 0; key < 1024; ++key) {
         if (glfwGetKey(window, key) == GLFW_PRESS)
@@ -109,24 +117,26 @@ void Engine::processInput() {
     // Mouse position is inverted because the origin of the window is in the top left corner
     MouseY = height - MouseY; // Invert y-axis of mouse position
 
-    // check if mouse is overlapping any buttons
-    for (const unique_ptr<Shape>& s : shapes) {
-        if (s->isOverlapping(vec2(MouseX, MouseY))) {
-            bool mouseOverlapsSquare = true;
-        };
-    }
-
     // Check if mouse has been pressed
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
     // Change color if you click a shape
     for (const unique_ptr<Shape>& s : shapes) {
-        if (mousePressed && s->isOverlapping(vec2(MouseX, MouseY-150))) {
-            s->setColor(onFill);
+        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY - 150))) {
+            if (!s->isOn) {
+                s->toggle();
+                s->setColor(onFill);
+                break;
+            }
+            else if (s->isOn) {
+                s->toggle();
+                s->setColor(offFill);
+                break;
+            }
         }
     }
+    mousePressedLastFrame = mousePressed;
 }
-
 void Engine::update() {
     // Calculate delta time
     float currentFrame = glfwGetTime();
@@ -141,9 +151,10 @@ void Engine::update() {
 }
 
 void Engine::render() {
-    glClearColor(.2, .2, .2, 1);
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    shapeShader.use();
 
     // Render shapes
     // For each shape, call it's setUniforms() function and then call it's draw() function
