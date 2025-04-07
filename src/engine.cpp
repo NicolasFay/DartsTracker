@@ -156,7 +156,7 @@ void Engine::update() {
 }
 
 void Engine::render() {
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0, 0, 0, 1); // black background
     glClear(GL_COLOR_BUFFER_BIT);
 
     shapeShader.use();
