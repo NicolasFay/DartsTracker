@@ -75,16 +75,16 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes() {
-    int Xoffset = 150;
-    int Yoffset = 150;
+    int Xoffset = 100;
+    int Yoffset = 100;
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), offFill));
-            Yoffset += 175; // evenly space the squares
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), offFill));
+            Yoffset += 125; // evenly space the squares
         }
-        Yoffset = 150; // reset Yoffset so next col starts in same spot
-        Xoffset += 175; // increment Xoffset to add another column
+        Yoffset = 100; // reset Yoffset so next col starts in same spot
+        Xoffset += 125; // increment Xoffset to add another column
     }
 
     // default all start as "off"
@@ -125,7 +125,7 @@ void Engine::processInput() {
     // Change color if you click a shape
     for (const unique_ptr<Shape>& s : shapes) {
         // check for mouse release
-        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY - 150))) {
+        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))) {
             // toggle and change color
             if (!s->isOn) {
                 s->toggle();
