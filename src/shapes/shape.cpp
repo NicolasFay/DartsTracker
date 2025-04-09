@@ -62,15 +62,18 @@ bool Shape::isOverlapping(const vec2 &point) const {
     return false; // Placeholder for compilation
 }
 
-void Shape::toggle() const {
+void Shape::toggle(struct color a, struct color b) {
     // simple switch to keep track over a button's status
     if (isOn) {
         isOn = false;
+        color = a;
     }
     else {
         isOn = true;
+        color = b;
     }
 }
+
 
 
 // Setters

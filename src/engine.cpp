@@ -144,7 +144,7 @@ void Engine::processInput() {
         bool buttonOverlapsMouse = s->isOverlapping(vec2(MouseX, MouseY));
 
         // create hover affect
-        if (buttonOverlapsMouse) {
+        if (buttonOverlapsMouse && screen == play) {
             hoverShapes[i]->setColor(hoverOn);
         }
         // remove hover affect
@@ -152,67 +152,27 @@ void Engine::processInput() {
             hoverShapes[i]->setColor(hoverOff);
         }
         // check for mouse release to toggle and change color
-        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))){
-            // turn buttons on
-            if (!s->isOn) {
-                // toggle clicked button
-                s->toggle();
-                s->setColor(onFill);
-                // toggle button below
-                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
-                    if (i + 1 < shapes.size()) {
-                        shapes[i + 1]->toggle();
-                        shapes[i + 1]->setColor(onFill);
-                    }
+        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))) {
+            s->toggle(offFill, onFill);
+            // toggle button above
+            if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+                if (i + 1 < shapes.size()) {
+                    shapes[i + 1]->toggle(offFill, onFill);
                 }
-                // toggle button above
-                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
-                    if (i - 1 < shapes.size()) {
-                        shapes[i - 1]->toggle();
-                        shapes[i - 1]->setColor(onFill);
-                    }
-                }
-                // toggle button to the left
-                if (i - 5 < shapes.size()) {
-                    shapes[i - 5]->toggle();
-                    shapes[i - 5]->setColor(onFill);
-                }
-                // toggle button to the right
-                if (i + 5 < shapes.size()) {
-                    shapes[i + 5]->toggle();
-                    shapes[i + 5]->setColor(onFill);
-                }
-                break;
             }
-            // turn buttons off
-            else if (s->isOn) {
-                s->toggle();
-                s->setColor(offFill);
-                // toggle button below
-                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
-                    if (i + 1 < shapes.size()) {
-                        shapes[i + 1]->toggle();
-                        shapes[i + 1]->setColor(offFill);
-                    }
+            // toggle button below
+            if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+                if (i - 1 < shapes.size()) {
+                    shapes[i - 1]->toggle(offFill, onFill);
                 }
-                // toggle button above
-                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
-                    if (i - 1 < shapes.size()) {
-                        shapes[i - 1]->toggle();
-                        shapes[i - 1]->setColor(offFill);
-                    }
-                }
-                // toggle button to the left
-                if (i - 5 < shapes.size()) {
-                    shapes[i - 5]->toggle();
-                    shapes[i - 5]->setColor(offFill);
-                }
-                // toggle button to the right
-                if (i + 5 < shapes.size()) {
-                    shapes[i + 5]->toggle();
-                    shapes[i + 5]->setColor(offFill);
-                }
-                break;
+            }
+            // toggle button to the left
+            if (i - 5 < shapes.size()) {
+                shapes[i - 5]->toggle(offFill, onFill);
+            }
+            // toggle button to the right
+            if (i + 5 < shapes.size()) {
+                shapes[i + 5]->toggle(offFill, onFill);
             }
         }
     }
@@ -224,6 +184,16 @@ void Engine::update() {
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
+
+    int count = 0;
+    for (int i = 0; i < shapes.size(); ++i) {
+        if (shapes[i]->isOn) {
+            count++;
+        }
+    }
+    if (count == 0) {
+        screen = over;
+    }
 
 
     // This function polls for events like keyboard input and mouse movement
@@ -241,10 +211,23 @@ void Engine::render() {
     switch (screen) {
         case start: {
             string welcome = "Welcome to Lights out!";
-            this->fontRenderer->renderText(welcome, width/2 - (12 * welcome.length()), height/1.25, projection, 1, vec3{1, 1, 1});
+            string start = "Press 's' to start.";
+            string instructions = "Instructions:";
+            string instructions1 = "The game begins with a fully lit grid.";
+            string instructions2 = "Click on a light to turn it and the four";
+            string instructions3 = "adjacent lights off. You win the game when";
+            string instructions4 = "all the lights have been turned off.";
+            this->fontRenderer->renderText(welcome, width/2 - (14 * welcome.length()), height/1.35, projection, 1.2, vec3{1, 1, 1});
+            this->fontRenderer->renderText(start, width/2 - (12 * start.length()), height/1.5, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions, width/2 - (12 * instructions.length()), height/2.3, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions1, width/2 - (8.8 * instructions1.length()), height/2.5, projection, 0.75, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions2, width/2 - (9.3 * instructions1.length()), height/2.7, projection, 0.75, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions3, width/2 - (9.8 * instructions1.length()), height/2.9, projection, 0.75, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions4, width/2 - (8.5 * instructions1.length()), height/3.15, projection, 0.75, vec3{1, 1, 1});
             break;
         }
         case play: {
+            this->shapeShader.use();
             // Render shapes
             // For each shape, call it's setUniforms() function and then call it's draw() function
             for (const unique_ptr<Shape>& s : hoverShapes) {
@@ -255,6 +238,11 @@ void Engine::render() {
                 s->setUniforms();
                 s->draw();
             }
+            break;
+        }
+        case over: {
+            string over = "You win!";
+            this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2, projection, 1, vec3{1, 1, 1});
             break;
         }
     }
