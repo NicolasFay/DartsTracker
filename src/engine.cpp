@@ -1,12 +1,14 @@
 #include "engine.h"
 #include <iostream>
 
-color offFill, onFill;
+color offFill, onFill, hoverOff, hoverOn;
 
 Engine::Engine() : keys() {
 
     offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
     onFill.vec = {1, 1, 0, 1}; // yellow
+    hoverOff.vec = {0, 0, 0, 1};
+    hoverOn.vec = {1, 0, 0, 1};
 
     this->initWindow();
     this->initShaders();
@@ -80,7 +82,7 @@ void Engine::initShapes() {
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            hoverShapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(110,110), color(0,0,0)));
+            hoverShapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(110,110), hoverOff));
             shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), onFill));
             Yoffset += 125; // evenly space the squares
         }
@@ -130,12 +132,11 @@ void Engine::processInput() {
 
         // create hover affect
         if (buttonOverlapsMouse) {
-            cout << i << endl;
-            hoverShapes[i]->setColor(color(1,0,0));
+            hoverShapes[i]->setColor(hoverOn);
         }
         // remove hover affect
         if (!buttonOverlapsMouse) {
-            hoverShapes[i]->setColor(color(0,0,0));
+            hoverShapes[i]->setColor(hoverOff);
         }
         // check for mouse release to toggle and change color
         if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))){
@@ -226,6 +227,10 @@ void Engine::render() {
 
     // Render shapes
     // For each shape, call it's setUniforms() function and then call it's draw() function
+    for (const unique_ptr<Shape>& s : hoverShapes) {
+        s->setUniforms();
+        s->draw();
+    }
     for (const unique_ptr<Shape>& s : shapes) {
         s->setUniforms();
         s->draw();
