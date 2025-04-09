@@ -35,6 +35,7 @@ class Engine {
         /// @brief Shapes to be rendered.
         /// @details Initialized in initShapes()
         vector<unique_ptr<Shape>> shapes;
+        vector<unique_ptr<Shape>> hoverShapes;
 
         double MouseX, MouseY;
         bool mousePressedLastFrame = false;

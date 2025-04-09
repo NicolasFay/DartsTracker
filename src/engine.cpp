@@ -80,6 +80,7 @@ void Engine::initShapes() {
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
+            hoverShapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(110,110), color(0,0,0)));
             shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), onFill));
             Yoffset += 125; // evenly space the squares
         }
@@ -122,15 +123,24 @@ void Engine::processInput() {
     // Check if mouse has been pressed
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
-    // Change color if you click a shape
+    // update squares
     for (int i = 0; i < shapes.size(); ++i){
-        const auto& s = shapes[i];
-        // check for mouse release
-        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))) {
-            // toggle and change color
+        const auto& s = shapes[i]; // current shape
+        bool buttonOverlapsMouse = s->isOverlapping(vec2(MouseX, MouseY));
+
+        // create hover affect
+        if (buttonOverlapsMouse) {
+            cout << i << endl;
+            hoverShapes[i]->setColor(color(1,0,0));
+        }
+        // remove hover affect
+        if (!buttonOverlapsMouse) {
+            hoverShapes[i]->setColor(color(0,0,0));
+        }
+        // check for mouse release to toggle and change color
+        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))){
             // turn buttons on
             if (!s->isOn) {
-                cout << i << endl;
                 // toggle clicked button
                 s->toggle();
                 s->setColor(onFill);
