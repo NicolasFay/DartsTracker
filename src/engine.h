@@ -21,7 +21,7 @@ class Engine {
         GLFWwindow* window{};
 
         /// @brief The width and height of the window.
-        const unsigned int width = 1000, height = 800; // Window dimensions
+        const unsigned int width = 800, height = 800; // Window dimensions
 
         /// @brief Keyboard state (True if pressed, false if not pressed).
         /// @details Index this array with GLFW_KEY_{key} to get the state of a key.
@@ -35,6 +35,7 @@ class Engine {
         /// @brief Shapes to be rendered.
         /// @details Initialized in initShapes()
         vector<unique_ptr<Shape>> shapes;
+        vector<unique_ptr<Shape>> hoverShapes;
 
         double MouseX, MouseY;
         bool mousePressedLastFrame = false;

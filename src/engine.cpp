@@ -1,12 +1,14 @@
 #include "engine.h"
 #include <iostream>
 
-color offFill, onFill;
+color offFill, onFill, hoverOff, hoverOn;
 
 Engine::Engine() : keys() {
 
     offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
     onFill.vec = {1, 1, 0, 1}; // yellow
+    hoverOff.vec = {0, 0, 0, 1};
+    hoverOn.vec = {1, 0, 0, 1};
 
     this->initWindow();
     this->initShaders();
@@ -75,21 +77,22 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes() {
-    int Xoffset = 150;
-    int Yoffset = 150;
+    int Xoffset = 100;
+    int Yoffset = 100;
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(150,150), offFill));
-            Yoffset += 175; // evenly space the squares
+            hoverShapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(110,110), hoverOff));
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), onFill));
+            Yoffset += 125; // evenly space the squares
         }
-        Yoffset = 150; // reset Yoffset so next col starts in same spot
-        Xoffset += 175; // increment Xoffset to add another column
+        Yoffset = 100; // reset Yoffset so next col starts in same spot
+        Xoffset += 125; // increment Xoffset to add another column
     }
 
     // default all start as "off"
     for (const unique_ptr<Shape>& s : shapes) {
-        s->isOn = false;
+        s->isOn = true;
     }
 }
 
@@ -122,19 +125,80 @@ void Engine::processInput() {
     // Check if mouse has been pressed
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
-    // Change color if you click a shape
-    for (const unique_ptr<Shape>& s : shapes) {
-        // check for mouse release
-        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY - 150))) {
-            // toggle and change color
+    // update squares
+    for (int i = 0; i < shapes.size(); ++i){
+        const auto& s = shapes[i]; // current shape
+        bool buttonOverlapsMouse = s->isOverlapping(vec2(MouseX, MouseY));
+
+        // create hover affect
+        if (buttonOverlapsMouse) {
+            hoverShapes[i]->setColor(hoverOn);
+        }
+        // remove hover affect
+        if (!buttonOverlapsMouse) {
+            hoverShapes[i]->setColor(hoverOff);
+        }
+        // check for mouse release to toggle and change color
+        if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))){
+            // turn buttons on
             if (!s->isOn) {
+                // toggle clicked button
                 s->toggle();
                 s->setColor(onFill);
+                // toggle button below
+                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+                    if (i + 1 < shapes.size()) {
+                        shapes[i + 1]->toggle();
+                        shapes[i + 1]->setColor(onFill);
+                    }
+                }
+                // toggle button above
+                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+                    if (i - 1 < shapes.size()) {
+                        shapes[i - 1]->toggle();
+                        shapes[i - 1]->setColor(onFill);
+                    }
+                }
+                // toggle button to the left
+                if (i - 5 < shapes.size()) {
+                    shapes[i - 5]->toggle();
+                    shapes[i - 5]->setColor(onFill);
+                }
+                // toggle button to the right
+                if (i + 5 < shapes.size()) {
+                    shapes[i + 5]->toggle();
+                    shapes[i + 5]->setColor(onFill);
+                }
                 break;
             }
+            // turn buttons off
             else if (s->isOn) {
                 s->toggle();
                 s->setColor(offFill);
+                // toggle button below
+                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+                    if (i + 1 < shapes.size()) {
+                        shapes[i + 1]->toggle();
+                        shapes[i + 1]->setColor(offFill);
+                    }
+                }
+                // toggle button above
+                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+                    if (i - 1 < shapes.size()) {
+                        shapes[i - 1]->toggle();
+                        shapes[i - 1]->setColor(offFill);
+                    }
+                }
+                // toggle button to the left
+                if (i - 5 < shapes.size()) {
+                    shapes[i - 5]->toggle();
+                    shapes[i - 5]->setColor(offFill);
+                }
+                // toggle button to the right
+                if (i + 5 < shapes.size()) {
+                    shapes[i + 5]->toggle();
+                    shapes[i + 5]->setColor(offFill);
+                }
                 break;
             }
         }
@@ -163,6 +227,10 @@ void Engine::render() {
 
     // Render shapes
     // For each shape, call it's setUniforms() function and then call it's draw() function
+    for (const unique_ptr<Shape>& s : hoverShapes) {
+        s->setUniforms();
+        s->draw();
+    }
     for (const unique_ptr<Shape>& s : shapes) {
         s->setUniforms();
         s->draw();
