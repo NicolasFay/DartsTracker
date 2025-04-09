@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "shader/shaderManager.h"
+#include "font/fontRenderer.h"
 #include "shapes/rect.h"
 #include "shapes/shape.h"
 
@@ -23,6 +24,10 @@ class Engine {
         /// @brief The width and height of the window.
         const unsigned int width = 800, height = 800; // Window dimensions
 
+        /// Projection matrix
+        const glm::mat4 projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
+
+
         /// @brief Keyboard state (True if pressed, false if not pressed).
         /// @details Index this array with GLFW_KEY_{key} to get the state of a key.
         bool keys[1024];
@@ -31,6 +36,10 @@ class Engine {
         /// @details Initialized in initShaders()
         unique_ptr<ShaderManager> shaderManager;
         Shader shapeShader;
+        Shader textShader;
+
+
+        unique_ptr<FontRenderer> fontRenderer;
 
         /// @brief Shapes to be rendered.
         /// @details Initialized in initShapes()

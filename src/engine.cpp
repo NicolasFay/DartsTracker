@@ -1,6 +1,9 @@
 #include "engine.h"
 #include <iostream>
 
+enum state {start, play, over};
+state screen;
+
 color offFill, onFill, hoverOff, hoverOn;
 
 Engine::Engine() : keys() {
@@ -71,7 +74,12 @@ void Engine::initShaders() {
                                                   "../res/shaders/shape.frag",
                                                   nullptr, "shape");
 
+    textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");
+
+    fontRenderer = make_unique<FontRenderer>(shaderManager->getShader("text"), "../res/fonts/MxPlus_IBM_BIOS.ttf", 24);
+
     // Set uniforms that never change
+    textShader.setVector2f("vertex", vec4(100, 100, .5, .5));
     shapeShader.use();
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 }
@@ -113,6 +121,11 @@ void Engine::processInput() {
 
     // Mouse position saved to check for collisions
     glfwGetCursorPos(window, &MouseX, &MouseY);
+
+    // Change screen from start to play when user hits s
+    if (keys[GLFW_KEY_S] && screen == start) {
+        screen = play;
+    }
 
     // Calculate delta time
     float currentFrame = glfwGetTime();
@@ -225,15 +238,25 @@ void Engine::render() {
 
     shapeShader.use();
 
-    // Render shapes
-    // For each shape, call it's setUniforms() function and then call it's draw() function
-    for (const unique_ptr<Shape>& s : hoverShapes) {
-        s->setUniforms();
-        s->draw();
-    }
-    for (const unique_ptr<Shape>& s : shapes) {
-        s->setUniforms();
-        s->draw();
+    switch (screen) {
+        case start: {
+            string welcome = "Welcome to Lights out!";
+            this->fontRenderer->renderText(welcome, width/2 - (12 * welcome.length()), height/1.25, projection, 1, vec3{1, 1, 1});
+            break;
+        }
+        case play: {
+            // Render shapes
+            // For each shape, call it's setUniforms() function and then call it's draw() function
+            for (const unique_ptr<Shape>& s : hoverShapes) {
+                s->setUniforms();
+                s->draw();
+            }
+            for (const unique_ptr<Shape>& s : shapes) {
+                s->setUniforms();
+                s->draw();
+            }
+            break;
+        }
     }
 
     // This is glfw function call is required to display the final image on the screen
