@@ -80,7 +80,7 @@ void Engine::initShapes() {
     // initialize 25 "off" squares
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i < 5; ++i) {
-            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), offFill));
+            shapes.push_back(make_unique<Rect>(shapeShader, vec2(Xoffset, Yoffset), vec2(100,100), onFill));
             Yoffset += 125; // evenly space the squares
         }
         Yoffset = 100; // reset Yoffset so next col starts in same spot
@@ -89,7 +89,7 @@ void Engine::initShapes() {
 
     // default all start as "off"
     for (const unique_ptr<Shape>& s : shapes) {
-        s->isOn = false;
+        s->isOn = true;
     }
 }
 
