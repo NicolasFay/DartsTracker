@@ -135,14 +135,18 @@ void Engine::processInput() {
                 s->toggle();
                 s->setColor(onFill);
                 // toggle button below
-                if (i + 1 < shapes.size()) {
-                    shapes[i + 1]->toggle();
-                    shapes[i + 1]->setColor(onFill);
+                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+                    if (i + 1 < shapes.size()) {
+                        shapes[i + 1]->toggle();
+                        shapes[i + 1]->setColor(onFill);
+                    }
                 }
                 // toggle button above
-                if (i - 1 < shapes.size()) {
-                    shapes[i - 1]->toggle();
-                    shapes[i - 1]->setColor(onFill);
+                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+                    if (i - 1 < shapes.size()) {
+                        shapes[i - 1]->toggle();
+                        shapes[i - 1]->setColor(onFill);
+                    }
                 }
                 // toggle button to the left
                 if (i - 5 < shapes.size()) {
@@ -161,14 +165,18 @@ void Engine::processInput() {
                 s->toggle();
                 s->setColor(offFill);
                 // toggle button below
-                if (i + 1 < shapes.size()) {
-                    shapes[i + 1]->toggle();
-                    shapes[i + 1]->setColor(offFill);
+                if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+                    if (i + 1 < shapes.size()) {
+                        shapes[i + 1]->toggle();
+                        shapes[i + 1]->setColor(offFill);
+                    }
                 }
                 // toggle button above
-                if (i - 1 < shapes.size()) {
-                    shapes[i - 1]->toggle();
-                    shapes[i - 1]->setColor(offFill);
+                if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+                    if (i - 1 < shapes.size()) {
+                        shapes[i - 1]->toggle();
+                        shapes[i - 1]->setColor(offFill);
+                    }
                 }
                 // toggle button to the left
                 if (i - 5 < shapes.size()) {
