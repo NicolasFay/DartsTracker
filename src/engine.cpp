@@ -123,18 +123,63 @@ void Engine::processInput() {
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
     // Change color if you click a shape
-    for (const unique_ptr<Shape>& s : shapes) {
+    for (int i = 0; i < shapes.size(); ++i){
+        const auto& s = shapes[i];
         // check for mouse release
         if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))) {
             // toggle and change color
+            // turn buttons on
             if (!s->isOn) {
+                cout << i << endl;
+                // toggle clicked button
                 s->toggle();
                 s->setColor(onFill);
+                // toggle button below
+                if (i + 1 < shapes.size()) {
+                    shapes[i + 1]->toggle();
+                    shapes[i + 1]->setColor(onFill);
+                }
+                // toggle button above
+                if (i - 1 < shapes.size()) {
+                    shapes[i - 1]->toggle();
+                    shapes[i - 1]->setColor(onFill);
+                }
+                // toggle button to the left
+                if (i - 5 < shapes.size()) {
+                    shapes[i - 5]->toggle();
+                    shapes[i - 5]->setColor(onFill);
+                }
+                // toggle button to the right
+                if (i + 5 < shapes.size()) {
+                    shapes[i + 5]->toggle();
+                    shapes[i + 5]->setColor(onFill);
+                }
                 break;
             }
+            // turn buttons off
             else if (s->isOn) {
                 s->toggle();
                 s->setColor(offFill);
+                // toggle button below
+                if (i + 1 < shapes.size()) {
+                    shapes[i + 1]->toggle();
+                    shapes[i + 1]->setColor(offFill);
+                }
+                // toggle button above
+                if (i - 1 < shapes.size()) {
+                    shapes[i - 1]->toggle();
+                    shapes[i - 1]->setColor(offFill);
+                }
+                // toggle button to the left
+                if (i - 5 < shapes.size()) {
+                    shapes[i - 5]->toggle();
+                    shapes[i - 5]->setColor(offFill);
+                }
+                // toggle button to the right
+                if (i + 5 < shapes.size()) {
+                    shapes[i + 5]->toggle();
+                    shapes[i + 5]->setColor(offFill);
+                }
                 break;
             }
         }
