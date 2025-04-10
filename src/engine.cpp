@@ -262,13 +262,17 @@ void Engine::render() {
                 s->setUniforms();
                 s->draw();
             }
+            // title of the game
+            string welcome = "Lights Out!";
+            this->fontRenderer->renderText(welcome, 20, height - 30, projection, 1, vec3{1, 1, 1});
+
             // putting the clickTracker on the top-left corner
             string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
-            this->fontRenderer->renderText(clickTrackerString, 20, height - 30, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(clickTrackerString, 60, height - 90, projection, 1, vec3{1, 1, 1});
 
             // putting the timer below clickTracker
             string deltaTimeString = "Time: " + to_string((int)currentTime);
-            this->fontRenderer->renderText(deltaTimeString, 20, height - 60, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(deltaTimeString, 60, height - 120, projection, 1, vec3{1, 1, 1});
 
 
             break;
@@ -286,9 +290,9 @@ void Engine::render() {
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
             string deltaTimeStringEnd = "Time: " + to_string((int)currentTime);
-            this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2.3, projection, 1, vec3{1, 1, 1});
-            this->fontRenderer->renderText(clickTrackerStringEnd, 20, height - 30, projection, 1, vec3{1, 1, 1});
-            this->fontRenderer->renderText(deltaTimeStringEnd, 20, height - 60, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(over, 20, height - 30, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(clickTrackerStringEnd, 60, height - 90, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(deltaTimeStringEnd, 60, height - 120, projection, 1, vec3{1, 1, 1});
             break;
         }
     }
