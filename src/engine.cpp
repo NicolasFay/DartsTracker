@@ -244,10 +244,10 @@ void Engine::render() {
             this->fontRenderer->renderText(welcome, width/2 - (14 * welcome.length()), height/1.35, projection, 1.2, vec3{1, 1, 1});
             this->fontRenderer->renderText(start, width/2 - (12 * start.length()), height/1.5, projection, 1, vec3{1, 1, 1});
             this->fontRenderer->renderText(instructions, width/2 - (12 * instructions.length()), height/2.3, projection, 1, vec3{1, 1, 1});
-            this->fontRenderer->renderText(instructions1, width/2 - (8.8 * instructions1.length()), height/2.5, projection, 0.75, vec3{1, 1, 1});
-            this->fontRenderer->renderText(instructions2, width/2 - (9.3 * instructions1.length()), height/2.7, projection, 0.75, vec3{1, 1, 1});
-            this->fontRenderer->renderText(instructions3, width/2 - (9.8 * instructions1.length()), height/2.9, projection, 0.75, vec3{1, 1, 1});
-            this->fontRenderer->renderText(instructions4, width/2 - (8.5 * instructions1.length()), height/3.15, projection, 0.75, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions1, width/2 - (8.6 * instructions1.length()), height/2.5, projection, 0.7, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions2, width/2 - (8.5 * instructions1.length()), height/2.7, projection, 0.65, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions3, width/2 - (8.8 * instructions1.length()), height/2.9, projection, 0.65, vec3{1, 1, 1});
+            this->fontRenderer->renderText(instructions4, width/2 - (8.3 * instructions1.length()), height/3.15, projection, 0.7, vec3{1, 1, 1});
             break;
         }
         case play: {
@@ -275,19 +275,20 @@ void Engine::render() {
         }
         case over: {
 
-            // is it necessary to make it look like the end gif?
-            // for (const unique_ptr<Shape>& s : shapes) {
-            //     s->setUniforms();
-            //     s->draw();
-            // }
+            // disable toogle
+            // light up cross, like Lights-Out-Game-End.gif
+            for (const unique_ptr<Shape>& s : shapes) {
+                s->setUniforms();
+                s->draw();
+            }
 
 
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
             string deltaTimeStringEnd = "Time: " + to_string((int)currentTime);
-            this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2, projection, 1, vec3{1, 1, 1});
-            this->fontRenderer->renderText(clickTrackerStringEnd, width/2 - (12 * clickTrackerStringEnd.length()), height/3 , projection, 1, vec3{1, 1, 1});
-            this->fontRenderer->renderText(deltaTimeStringEnd, width/2  - (12 * clickTrackerStringEnd.length()), height/4 , projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2.3, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(clickTrackerStringEnd, 20, height - 30, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(deltaTimeStringEnd, 20, height - 60, projection, 1, vec3{1, 1, 1});
             break;
         }
     }
