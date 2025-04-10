@@ -4,34 +4,39 @@
 enum state {start, play, over};
 state screen;
 
+// global color setting
 color offFill, onFill, hoverOff, hoverOn;
 
 Engine::Engine() : keys() {
-
-    offFill.vec = {0.5, 0.5, 0.5, 1}; // grey
-    onFill.vec = {1, 1, 0, 1}; // yellow
-    hoverOff.vec = {0, 0, 0, 1};
-    hoverOn.vec = {1, 0, 0, 1};
+    offFill.vec = {0.5, 0.5, 0.5, 1};   // grey
+    onFill.vec = {1, 1, 0, 1};          // yellow
+    hoverOff.vec = {0, 0, 0, 1};        // unaffected
+    hoverOn.vec = {1, 0, 0, 1};         // red border on gray/yellow
 
     this->initWindow();
     this->initShaders();
     this->initShapes();
-
 }
 
 Engine::~Engine() {}
 
+// initialize the actual window using GLFW
 unsigned int Engine::initWindow(bool debug) {
     // glfw: initialize and configure
     glfwInit();
+    // set window settings
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // set the OpenGL
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
+
+    // prevents the window from being resized
     glfwWindowHint(GLFW_RESIZABLE, false);
 
     // This creates the window using GLFW.
@@ -42,12 +47,16 @@ unsigned int Engine::initWindow(bool debug) {
         glfwTerminate();
         return -1;
     }
+
     // This sets the OpenGL context to the window we just created.
     glfwMakeContextCurrent(window);
 
-    // Glad is an OpenGL function loader. It loads all the OpenGL functions that are defined by the driver.
-    // This is required because OpenGL is a specification, not an implementation.
-    // The driver is the implementation of OpenGL that is installed on your computer.
+    // Glad is an OpenGL function loader.
+    // It loads all the OpenGL functions that are defined by the driver.
+    // This is required because OpenGL is a specification,
+    //      not an implementation.
+    // The driver is the implementation of OpenGL
+    //      that is installed on your computer.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cout << "Failed to initialize GLAD" << endl;
         return -1;
@@ -65,6 +74,7 @@ unsigned int Engine::initWindow(bool debug) {
     return 0;
 }
 
+// initializes and configures the shaders the game will use
 void Engine::initShaders() {
     // load shader manager
     shaderManager = make_unique<ShaderManager>();
@@ -281,9 +291,9 @@ void Engine::render() {
 
             // disable toogle
             // light up cross, like Lights-Out-Game-End.gif
-            for (const unique_ptr<Shape>& s : shapes) {
-                s->setUniforms();
-                s->draw();
+            for (const unique_ptr<Shape>& s2 : shapes) {
+                s2->setUniforms();
+                s2->draw();
             }
 
 
