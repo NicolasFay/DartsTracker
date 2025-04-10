@@ -77,19 +77,29 @@ unsigned int Engine::initWindow(bool debug) {
 // initializes and configures the shaders the game will use
 void Engine::initShaders() {
     // load shader manager
+    // make_unique handles memory safely
+    // manager will load and store your shaders,
+    //      so you can access them by name
     shaderManager = make_unique<ShaderManager>();
 
     // Load shader into shader manager and retrieve it
+    // loads a shader for drawing shapes
+        // uses a vertex shader called shape.vert
+        //      a fragment shader called shape.frag
+    // 'shape' lets you look it up later
     shapeShader = this->shaderManager->loadShader("../res/shaders/shape.vert",
                                                   "../res/shaders/shape.frag",
                                                   nullptr, "shape");
 
+    // loads a shader for rendering text
     textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");
-
+    // to draw text on screen
     fontRenderer = make_unique<FontRenderer>(shaderManager->getShader("text"), "../res/fonts/MxPlus_IBM_BIOS.ttf", 24);
 
     // Set uniforms that never change
     textShader.setVector2f("vertex", vec4(100, 100, .5, .5));
+
+    // tells OpenG to use the shape shader
     shapeShader.use();
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 }
@@ -188,6 +198,7 @@ void Engine::processInput() {
             if (i + 5 < shapes.size()) {
                 shapes[i + 5]->toggle(offFill, onFill);
             }
+
         }
     }
     // save mousePressed for next frame
@@ -273,8 +284,8 @@ void Engine::render() {
                 s->draw();
             }
             // title of the game
-            string welcome = "Lights Out!";
-            this->fontRenderer->renderText(welcome, 20, height - 30, projection, 1, vec3{1, 1, 1});
+            string title = "Lights Out!";
+            this->fontRenderer->renderText(title, 20, height - 30, projection, 1, vec3{1, 1, 1});
 
             // putting the clickTracker on the top-left corner
             string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
@@ -289,13 +300,10 @@ void Engine::render() {
         }
         case over: {
 
-            // disable toogle
-            // light up cross, like Lights-Out-Game-End.gif
-            for (const unique_ptr<Shape>& s2 : shapes) {
-                s2->setUniforms();
-                s2->draw();
+            for (const unique_ptr<Shape>& s : shapes) {
+                s->setUniforms();
+                s->draw();
             }
-
 
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
