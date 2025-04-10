@@ -20,6 +20,7 @@ using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm
 class Engine {
     private:
         // for tracking clicks
+        // referenced: count++ on Data Structures - sorting project
         int clickTracker = 0;
 
         /// @brief The actual GLFW window.
