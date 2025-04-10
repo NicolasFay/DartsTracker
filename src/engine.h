@@ -4,13 +4,14 @@
 #include <vector>
 #include <memory>
 #include <GLFW/glfw3.h>
-
+#include <string>
 #include "shader/shaderManager.h"
 #include "font/fontRenderer.h"
 #include "shapes/rect.h"
 #include "shapes/shape.h"
 
-using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4;
+
+using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4, std::to_string;
 
 /**
  * @brief The Engine class.
@@ -18,6 +19,9 @@ using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm
  */
 class Engine {
     private:
+        // for tracking clicks
+        int clickTracker = 0;
+
         /// @brief The actual GLFW window.
         GLFWwindow* window{};
 

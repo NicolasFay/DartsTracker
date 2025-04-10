@@ -152,7 +152,11 @@ void Engine::processInput() {
             hoverShapes[i]->setColor(hoverOff);
         }
         // check for mouse release to toggle and change color
+        // tracking clicks
         if (!mousePressed && mousePressedLastFrame && s->isOverlapping(vec2(MouseX, MouseY))) {
+            // for tracking clicks
+            clickTracker++;
+
             s->toggle(offFill, onFill);
             // toggle button above
             if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
@@ -238,11 +242,17 @@ void Engine::render() {
                 s->setUniforms();
                 s->draw();
             }
+            // putting the clickTracker on the top-left corner
+            string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
+            this->fontRenderer->renderText(clickTrackerString, 20, height - 30, projection, 1, vec3{1, 1, 1});
+
             break;
         }
         case over: {
             string over = "You win!";
+            string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
             this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2, projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(clickTrackerStringEnd, width/2 - (12 * clickTrackerStringEnd.length()), height/3 , projection, 1, vec3{1, 1, 1});
             break;
         }
     }
