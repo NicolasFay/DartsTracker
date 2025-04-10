@@ -202,11 +202,24 @@ void Engine::update() {
 
     // vector for time at each update
     vector <float> times;
-    // push current time to vec
-    times.push_back(glfwGetTime());
-    // time since start = last item in vector - first item
-    currentTime = times[times.size()] - times[0];
-
+    switch (screen) {
+        case start: {
+            currentTime = 0;
+            glfwSetTime(0);
+            break;
+        }
+        case play: {
+            // push current time to vec
+            times.push_back(glfwGetTime());
+            // time since start = last item in vector - first item
+            currentTime = times[times.size()] - times[0];
+            break;
+        }
+        case over: {
+            this->currentTime = currentTime;
+            break;
+        }
+    }
 
     // This function polls for events like keyboard input and mouse movement
     // It needs to be called every frame
