@@ -1,5 +1,6 @@
 #include "engine.h"
 #include <iostream>
+#include <iomanip>
 
 enum state {start, play, over};
 state screen;
@@ -199,6 +200,13 @@ void Engine::update() {
         screen = over;
     }
 
+    // vector for time at each update
+    vector <float> times;
+    // push current time to vec
+    times.push_back(glfwGetTime());
+    // time since start = last item in vector - first item
+    currentTime = times[times.size()] - times[0];
+
 
     // This function polls for events like keyboard input and mouse movement
     // It needs to be called every frame
@@ -245,6 +253,10 @@ void Engine::render() {
             // putting the clickTracker on the top-left corner
             string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
             this->fontRenderer->renderText(clickTrackerString, 20, height - 30, projection, 1, vec3{1, 1, 1});
+
+            // add timer
+            string timer = "Time: " + to_string(abs(currentTime));
+            this->fontRenderer->renderText(timer, 20, height - 70, projection, 1, vec3{1, 1, 1});
 
             break;
         }
