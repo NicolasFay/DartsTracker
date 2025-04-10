@@ -274,6 +274,14 @@ void Engine::render() {
             break;
         }
         case over: {
+
+            // is it necessary to make it look like the end gif?
+            // for (const unique_ptr<Shape>& s : shapes) {
+            //     s->setUniforms();
+            //     s->draw();
+            // }
+
+
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
             string deltaTimeStringEnd = "Time: " + to_string((int)currentTime);
