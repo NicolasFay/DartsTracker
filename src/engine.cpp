@@ -199,6 +199,13 @@ void Engine::update() {
         screen = over;
     }
 
+    // vector for time at each update
+    vector <float> times;
+    // push current time to vec
+    times.push_back(glfwGetTime());
+    // time since start = last item in vector - first item
+    currentTime = times[times.size()] - times[0];
+
 
     // This function polls for events like keyboard input and mouse movement
     // It needs to be called every frame
@@ -207,7 +214,7 @@ void Engine::update() {
 }
 
 void Engine::render() {
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0, 0, 0, 1); // black background
     glClear(GL_COLOR_BUFFER_BIT);
 
     shapeShader.use();
@@ -245,16 +252,6 @@ void Engine::render() {
             // putting the clickTracker on the top-left corner
             string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
             this->fontRenderer->renderText(clickTrackerString, 20, height - 30, projection, 1, vec3{1, 1, 1});
-
-            // putting the deltaTime below clickTracker
-            string deltaTimeString = "Time: " + to_string((int)lastFrame);
-            this->fontRenderer->renderText(deltaTimeString, 20, height - 60, projection, 1, vec3{1, 1, 1});
-
-
-            break;
-
-
-
 
             break;
         }

@@ -23,6 +23,9 @@ class Engine {
         // referenced: count++ on Data Structures - sorting project
         int clickTracker = 0;
 
+        // vector for time at each update
+        float currentTime;
+
         /// @brief The actual GLFW window.
         GLFWwindow* window{};
 
