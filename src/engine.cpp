@@ -246,13 +246,25 @@ void Engine::render() {
             string clickTrackerString = "Number of Clicks: " + to_string(clickTracker);
             this->fontRenderer->renderText(clickTrackerString, 20, height - 30, projection, 1, vec3{1, 1, 1});
 
+            // putting the deltaTime below clickTracker
+            string deltaTimeString = "Time: " + to_string((int)lastFrame);
+            this->fontRenderer->renderText(deltaTimeString, 20, height - 60, projection, 1, vec3{1, 1, 1});
+
+
+            break;
+
+
+
+
             break;
         }
         case over: {
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
+            string deltaTimeStringEnd = "Time: " + to_string((int)lastFrame);
             this->fontRenderer->renderText(over, width/2 - (12 * over.length()), height/2, projection, 1, vec3{1, 1, 1});
             this->fontRenderer->renderText(clickTrackerStringEnd, width/2 - (12 * clickTrackerStringEnd.length()), height/3 , projection, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(deltaTimeStringEnd, width/2  - (12 * clickTrackerStringEnd.length()), height/4 , projection, 1, vec3{1, 1, 1});
             break;
         }
     }
