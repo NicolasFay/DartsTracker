@@ -101,8 +101,9 @@ class Shape {
         virtual bool isOverlapping(const vec2& point) const;
 
 
-        /// @brief Switches isOn variable when a button is clicked.
-        void toggle() const;
+        /// @brief Switches isOn variable and the color when a button is clicked.
+        void toggle(color a, color b);
+
 
 
         // --------------------------------------------------------

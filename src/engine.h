@@ -4,12 +4,14 @@
 #include <vector>
 #include <memory>
 #include <GLFW/glfw3.h>
-
+#include <string>
 #include "shader/shaderManager.h"
+#include "font/fontRenderer.h"
 #include "shapes/rect.h"
 #include "shapes/shape.h"
 
-using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4;
+
+using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4, std::to_string;
 
 /**
  * @brief The Engine class.
@@ -17,11 +19,19 @@ using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm
  */
 class Engine {
     private:
+        // for tracking clicks
+        // referenced: count++ on Data Structures - sorting project
+        int clickTracker = 0;
+
         /// @brief The actual GLFW window.
         GLFWwindow* window{};
 
         /// @brief The width and height of the window.
         const unsigned int width = 800, height = 800; // Window dimensions
+
+        /// Projection matrix
+        const glm::mat4 projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
+
 
         /// @brief Keyboard state (True if pressed, false if not pressed).
         /// @details Index this array with GLFW_KEY_{key} to get the state of a key.
@@ -31,6 +41,10 @@ class Engine {
         /// @details Initialized in initShaders()
         unique_ptr<ShaderManager> shaderManager;
         Shader shapeShader;
+        Shader textShader;
+
+
+        unique_ptr<FontRenderer> fontRenderer;
 
         /// @brief Shapes to be rendered.
         /// @details Initialized in initShapes()
