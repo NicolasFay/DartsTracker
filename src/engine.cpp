@@ -159,7 +159,8 @@ void Engine::processInput() {
     bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
     // update squares
-    for (int i = 0; i < shapes.size(); ++i){
+    if (screen == play) {
+    for (int i = 0; i < shapes.size(); ++i) {
         const auto& s = shapes[i]; // current shape
         bool buttonOverlapsMouse = s->isOverlapping(vec2(MouseX, MouseY));
 
@@ -198,7 +199,7 @@ void Engine::processInput() {
             if (i + 5 < shapes.size()) {
                 shapes[i + 5]->toggle(offFill, onFill);
             }
-
+        }
         }
     }
     // save mousePressed for next frame
