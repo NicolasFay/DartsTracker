@@ -292,7 +292,7 @@ void Engine::render() {
             this->fontRenderer->renderText(clickTrackerString, 60, height - 90, projection, 1, vec3{1, 1, 1});
 
             // putting the timer below clickTracker
-            string deltaTimeString = "Time: " + to_string((int)currentTime);
+            string deltaTimeString = "Time: " + to_string(abs((int)currentTime));
             this->fontRenderer->renderText(deltaTimeString, 60, height - 120, projection, 1, vec3{1, 1, 1});
 
 
@@ -307,7 +307,7 @@ void Engine::render() {
 
             string over = "You win!";
             string clickTrackerStringEnd = "Number of Clicks: " + to_string(clickTracker);
-            string deltaTimeStringEnd = "Time: " + to_string((int)currentTime);
+            string deltaTimeStringEnd = "Time: " + to_string(abs((int)currentTime));
             this->fontRenderer->renderText(over, 20, height - 30, projection, 1, vec3{1, 1, 1});
             this->fontRenderer->renderText(clickTrackerStringEnd, 60, height - 90, projection, 1, vec3{1, 1, 1});
             this->fontRenderer->renderText(deltaTimeStringEnd, 60, height - 120, projection, 1, vec3{1, 1, 1});
