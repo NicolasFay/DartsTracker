@@ -122,6 +122,25 @@ void Engine::initShapes() {
     for (const unique_ptr<Shape>& s : shapes) {
         s->isOn = true;
     }
+    // randomize start configuration
+    // have the program toggle a random 10 buttons to start the game
+    for (int i = 0; i < 10; i++) {
+        // random button to toggle
+        int randButtonIndex = rand() % 25;
+        shapes[randButtonIndex]->toggle(offFill, onFill); // toggle button
+        // toggle button above
+        if (i!= 4 && i!= 9 && i!= 14 && i!= 19) {
+            if (i + 1 < shapes.size()) { shapes[i + 1]->toggle(offFill, onFill); }
+        }
+        // toggle button below
+        if (i!= 5 && i!= 10 && i!= 15 && i!= 20) {
+            if (i - 1 < shapes.size()) { shapes[i - 1]->toggle(offFill, onFill); }
+        }
+        // toggle button to the left
+        if (i - 5 < shapes.size()) { shapes[i - 5]->toggle(offFill, onFill); }
+        // toggle button to the right
+        if (i + 5 < shapes.size()) { shapes[i + 5]->toggle(offFill, onFill); }
+    }
 }
 
 void Engine::processInput() {
