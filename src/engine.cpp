@@ -105,6 +105,7 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes() {
+//TODO change this for making the dart board
     int Xoffset = 100;
     int Yoffset = 100;
     // initialize 25 "off" squares
