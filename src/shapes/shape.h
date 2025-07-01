@@ -104,7 +104,10 @@ class Shape {
         /// @brief Switches isOn variable and the color when a button is clicked.
         void toggle(color a, color b);
 
-
+        // --------------------------------------------------------
+        // Collision functions
+        // --------------------------------------------------------
+        virtual bool isOverlapping(const Shape& other) const = 0;
 
         // --------------------------------------------------------
         // Drawing functions
@@ -140,6 +143,8 @@ protected:
 
         /// @brief The indices of the shape
         vector<unsigned int> indices;
+
+        virtual void initVectors() = 0;
 };
 
 #endif //GRAPHICS_SHAPE_H
