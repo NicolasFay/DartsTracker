@@ -86,6 +86,7 @@ class Shape {
         void setSizeX(float x);
         void setSizeY(float y);
 
+
         // Color
         void setColor(color color);
         void setColor(vec4 color);
